@@ -70,7 +70,9 @@ void SceneMain::end()
 // –ˆƒtƒŒ[ƒ€‚Ìˆ—
 void SceneMain::update()
 {
-	creatObject();
+
+
+	m_object.setData(0, 0, 0);
 
 	
 	if (!m_isOpenWindow) {
@@ -120,14 +122,5 @@ void SceneMain::draw()
 		m_menuWindow.draw();
 
 	}
-
-}
-
-void SceneMain::creatObject() {
-
-
-
-	m_object.setData(0, 0, 0);
-
 
 }

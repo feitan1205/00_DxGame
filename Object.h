@@ -17,10 +17,13 @@ public:
 	void update();
 	void draw();
 
+	bool getisExist() { return m_isExist; }
+
 private:
 
 	Vec2 m_Index;
 
 	int m_objectNum;
 
+	bool m_isExist;
 };

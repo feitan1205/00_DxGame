@@ -24,8 +24,6 @@ public:
 	bool isMenuOpen() { return m_isMenu; }
 	bool getisGameEnd() { return m_isGameEnd; }
 
-	void creatObject();
-
 private:
 
 	bool m_isMenu;
