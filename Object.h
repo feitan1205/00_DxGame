@@ -12,16 +12,21 @@ public:
 	void init();
 	void end();
 
-	void setData(int x,int y, int Num);
+	void setData(float x, float y, int Num);
 
 	void update();
 	void draw();
 
 	bool getisExist() { return m_isExist; }
+	Vec2 getisIndex() { return m_Index; }
 
 private:
 
 	Vec2 m_Index;
+
+	unsigned int Red;
+	unsigned int Green;
+	unsigned int Blue;
 
 	int m_objectNum;
 

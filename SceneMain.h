@@ -38,6 +38,6 @@ private:
 
 	SceneMenuWindow m_menuWindow;
 
-	Object m_object;
+	Object m_object[16];
 
 };

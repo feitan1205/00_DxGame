@@ -50,7 +50,22 @@ void SceneMain::init()
 {
 
 	m_menuWindow.init();
-	m_object.init();
+
+	for (int i = 0; i < 16; i++) {
+		m_object[i].init();
+	}
+
+	for (int i = 0; i < 2; i++) {
+		m_object[i].setData(GetRand(3), GetRand(3), ((GetRand(1) + 1) * 2));
+		if (i == 1) {
+			if (m_object[i].getisIndex().x == m_object[i - 1].getisIndex().x &&
+				m_object[i].getisIndex().y == m_object[i - 1].getisIndex().y) {
+				i--;
+				continue;
+			}
+		}
+	}
+	
 
 	m_isMenu = false;
 	m_isOpenWindow = false;
@@ -63,7 +78,9 @@ void SceneMain::end()
 {
 
 	m_menuWindow.end();
-	m_object.end();
+	for (int i = 0; i < 16; i++) {
+		m_object[i].end();
+	}
 	
 }
 
@@ -72,8 +89,24 @@ void SceneMain::update()
 {
 
 
-	m_object.setData(0, 0, 0);
+	//m_object[0].setData(0, 0, 0);
 
+	if (Pad::isTrigger(PAD_INPUT_UP)) {
+		for (int i = 0; i < 16; i++) {
+			if (!m_object[i].getisExist()) {
+				m_object[i].setData(GetRand(3), GetRand(3), ((GetRand(1) + 1) * 2));
+			}
+		}
+	}
+	else if (Pad::isTrigger(PAD_INPUT_DOWN)) {
+
+	}
+	else if (Pad::isTrigger(PAD_INPUT_LEFT)) {
+
+	}
+	else if (Pad::isTrigger(PAD_INPUT_RIGHT)) {
+
+	}
 	
 	if (!m_isOpenWindow) {
 		if (Pad::isTrigger(PAD_INPUT_4)) {
@@ -95,7 +128,9 @@ void SceneMain::update()
 		return;
 	}
 
-	m_object.update();
+	for (int i = 0; i < 16; i++) {
+		m_object[i].update();
+	}
 
 	if (Pad::isTrigger(PAD_INPUT_8)) {
 		m_isMenu = true;
@@ -113,7 +148,11 @@ void SceneMain::draw()
 		}
 	}
 
-	m_object.draw();
+	for (int i = 0; i < 16; i++) {
+		if (m_object[i].getisExist()) {
+			m_object[i].draw();
+		}
+	}
 
 	if (m_isOpenWindow) DrawFormatString(0, 0, GetColor(255, 0, 0), "E", true);
 
