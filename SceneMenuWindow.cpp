@@ -11,7 +11,7 @@ void SceneMenuWindow::init()
 	//m_isGameEnd = false;
 
 	m_menu.init();
-	m_menu.addItem("ステータス");
+	m_menu.addItem("再開");
 	m_menu.addItem("オプション");
 	m_menu.addItem("ゲーム終了");
 

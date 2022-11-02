@@ -17,6 +17,8 @@ public:
 	void update();
 	void draw();
 
+	void moveObject(float vec_x, float vec_y);
+
 	bool getisExist() { return m_isExist; }
 	Vec2 getisIndex() { return m_Index; }
 

@@ -21,6 +21,9 @@ public:
 	// –ˆƒtƒŒ[ƒ€‚Ì•`‰æ
 	void draw();
 
+	void moveObject(float vec_x, float vec_y);
+	void creatObject();
+
 	bool isMenuOpen() { return m_isMenu; }
 	bool getisGameEnd() { return m_isGameEnd; }
 
@@ -39,5 +42,8 @@ private:
 	SceneMenuWindow m_menuWindow;
 
 	Object m_object[16];
+
+	int m_tmpx;
+	int m_tmpy;
 
 };
