@@ -21,7 +21,7 @@ public:
 	// –ˆƒtƒŒ[ƒ€‚Ì•`‰æ
 	void draw();
 
-	void moveObject(float vec_x, float vec_y);
+	void moveObject(int vec_x, int vec_y, int minNum, int maxNum);
 	void creatObject();
 
 	bool isMenuOpen() { return m_isMenu; }
@@ -41,9 +41,14 @@ private:
 
 	SceneMenuWindow m_menuWindow;
 
-	Object m_object[16];
+	Object m_object[4][4];
 
 	int m_tmpx;
 	int m_tmpy;
 
+	int m_movecount;
+
+	int m_existcount;
+
+	int m_score;
 };

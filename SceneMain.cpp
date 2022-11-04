@@ -40,6 +40,9 @@ SceneMain::SceneMain()
 	m_isEnemyHit = false;
 	m_tmpx = 0;
 	m_tmpy = 0;
+	m_movecount = 0;
+	m_existcount = 0;
+	m_score = 0;
 }
 
 SceneMain::~SceneMain()
@@ -53,21 +56,32 @@ void SceneMain::init()
 
 	m_menuWindow.init();
 
-	for (int i = 0; i < 16; i++) {
-		m_object[i].init();
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			m_object[i][j].init();
+		}
 	}
 
 	for (int i = 0; i < 2; i++) {
-		m_object[i].setData(GetRand(3), GetRand(3), ((GetRand(1) + 1) * 2));
+
+		m_tmpx = GetRand(3);
+		m_tmpy = GetRand(3);
+
 		if (i == 1) {
-			if (m_object[i].getisIndex().x == m_object[i - 1].getisIndex().x &&
-				m_object[i].getisIndex().y == m_object[i - 1].getisIndex().y) {
+			if (m_object[m_tmpx][m_tmpy].getisExist()) {
 				i--;
 				continue;
 			}
 		}
+
+		m_object[m_tmpx][m_tmpy].setData(((GetRand(1) + 1) * 2));
 	}
-	
+
+	/*m_object[2][3].setData(16);
+	m_object[2][2].setData(16);
+	m_object[3][1].setData(8);
+	m_object[3][2].setData(8);
+	m_object[3][3].setData(4);*/
 
 	m_isMenu = false;
 	m_isOpenWindow = false;
@@ -80,8 +94,11 @@ void SceneMain::end()
 {
 
 	m_menuWindow.end();
-	for (int i = 0; i < 16; i++) {
-		m_object[i].end();
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			m_object[i][j].end();
+		}
 	}
 	
 }
@@ -106,25 +123,36 @@ void SceneMain::update()
 
 	if (Pad::isTrigger(PAD_INPUT_UP)) {
 		
-		moveObject(0, -1);
+		moveObject(0, -1,0,4);
 
-		creatObject();
+		if (m_movecount != 0) {
+			creatObject();
+		}
 
 	}
 	else if (Pad::isTrigger(PAD_INPUT_DOWN)) {
 
-		creatObject();
+		moveObject(0, 1,4,0);
 
+		if (m_movecount != 0) {
+			creatObject();
+		}
 	}
 	else if (Pad::isTrigger(PAD_INPUT_LEFT)) {
 
-		creatObject();
+		moveObject(-1, 0,0,4);
 
+		if (m_movecount != 0) {
+			creatObject();
+		}
 	}
 	else if (Pad::isTrigger(PAD_INPUT_RIGHT)) {
 
-		creatObject();
+		moveObject(1, 0,4,0);
 
+		if (m_movecount != 0) {
+			creatObject();
+		}
 	}
 	
 	if (!m_isOpenWindow) {
@@ -139,8 +167,10 @@ void SceneMain::update()
 	}
 
 
-	for (int i = 0; i < 16; i++) {
-		m_object[i].update();
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			m_object[i][j].update();
+		}
 	}
 
 	if (Pad::isTrigger(PAD_INPUT_8)) {
@@ -153,21 +183,22 @@ void SceneMain::update()
 void SceneMain::draw()
 {
 
+	SetFontSize(30);
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "スコア：%d", m_score, true);
+	SetFontSize(16);
+
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
 			DrawBox(100 * (i + 1), 100 * (j + 1), 100 * (i + 1) + 100, 100 * (j + 1) + 100, GetColor(255, 255, 255), false);
 		}
 	}
 
-	for (int i = 0; i < 16; i++) {
-		if (m_object[i].getisExist()) {
-			m_object[i].draw();
-			DrawFormatString(0, i * 16, GetColor(255, 255, 255), "%f,%f", m_object[i].getisIndex().x, m_object[i].getisIndex().y, true);
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			if (m_object[i][j].getisExist()) {
+				m_object[i][j].draw(i,j);
+			}
 		}
-		if (!m_object[i].getisExist()) {
-			DrawFormatString(0, i * 16, GetColor(255, 0, 0), "%d", i, true);
-		}
-
 	}
 
 	if (m_isOpenWindow) DrawFormatString(0, 0, GetColor(255, 0, 0), "・", true);
@@ -180,36 +211,197 @@ void SceneMain::draw()
 
 }
 
-void SceneMain::moveObject(float vec_x, float vec_y) {
+void SceneMain::moveObject(int vec_x, int vec_y, int minNum, int maxNum){
 
+	m_existcount = 0;
+	m_movecount = 0;
 
-
-	for (int i = 0; i < 16; i++) {
-		if (m_object[i].getisExist()) {
+	if (minNum == 0) {
+		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
-				if (m_object[i].getisIndex().x + vec_x < 0 ||
-					m_object[i].getisIndex().x + vec_x > 3 ||
-					m_object[i].getisIndex().y + vec_y < 0 ||
-					m_object[i].getisIndex().y + vec_y > 3) {
-					break;
+
+
+				if (m_object[i][j].getisExist()) {
+
+					if (vec_x != 0) {
+
+						for (int s = i - 1; s > -1; s--) {
+
+							if (m_object[s][j].getisExist()) {
+
+								if (m_object[s][j].getisIncrease()) {
+									break;
+								}
+
+								if (m_object[s][j].getObjectNum() == m_object[i][j].getObjectNum() ||
+									m_object[s][j].getObjectNum() == m_object[s + 1][j].getObjectNum()) {
+									m_object[s][j].increaseNum();
+									m_object[s + 1][j].init();
+									m_object[i][j].init();
+									m_score += m_object[s][j].getObjectNum();
+									m_movecount++;
+								}
+
+								break;
+							}
+
+							if (s == i - 1) {
+								m_object[s][j] = m_object[i][j];
+								m_object[i][j].init();
+								m_movecount++;
+							}
+							else {
+								m_object[s][j] = m_object[s + 1][j];
+								m_object[s + 1][j].init();
+								m_movecount++;
+							}
+
+						}
+
+					}
+
+					if (vec_y != 0) {
+
+						for (int s = j - 1; s > -1; s--) {
+
+							if (m_object[i][s].getisExist()) {
+
+								if (m_object[i][s].getisIncrease()) {
+									break;
+								}
+
+								if (m_object[i][s].getObjectNum() == m_object[i][j].getObjectNum() ||
+									m_object[i][s].getObjectNum() == m_object[i][s + 1].getObjectNum()) {
+									m_object[i][s].increaseNum();
+									m_object[i][s + 1].init();
+									m_object[i][j].init();
+									m_score += m_object[i][s].getObjectNum();
+									m_movecount++;
+								}
+								break;
+							}
+
+							if (s == j - 1) {
+								m_object[i][s] = m_object[i][j];
+								m_object[i][j].init();
+								m_movecount++;
+							}
+							else {
+								m_object[i][s] = m_object[i][s + 1];
+								m_object[i][s + 1].init();
+								m_movecount++;
+							}
+
+						}
+
+					}
+
 				}
-
-				for (int k = 0; k < 16; k++) {
-					if (i == k)		continue;
-
-
-				}
-
-				m_object[i].moveObject(vec_x, vec_y);
 			}
 		}
 	}
+
+
+	if (minNum == 4) {
+		for (int i = 3; i >= 0; i--) {
+			for (int j = 3; j >= 0; j--) {
+
+
+				if (m_object[i][j].getisExist()) {
+
+					if (vec_x != 0) {
+
+						for (int s = i + 1; s < 4; s++) {
+
+							if (m_object[s][j].getisExist()) {
+
+								if (m_object[s][j].getisIncrease()) {
+									break;
+								}
+
+								if (m_object[s][j].getObjectNum() == m_object[i][j].getObjectNum() ||
+									m_object[s][j].getObjectNum() == m_object[s - 1][j].getObjectNum()) {
+									m_object[s][j].increaseNum();
+									m_object[s - 1][j].init();
+									m_object[i][j].init();
+									m_score += m_object[s][j].getObjectNum();
+									m_movecount++;
+								}
+								break;
+							}
+
+							if (s == i + 1) {
+								m_object[s][j] = m_object[i][j];
+								m_object[i][j].init();
+								m_movecount++;
+							}
+							else {
+								m_object[s][j] = m_object[s - 1][j];
+								m_object[s - 1][j].init();
+								m_movecount++;
+							}
+
+						}
+
+					}
+
+					if (vec_y != 0) {
+
+						for (int s = j + 1; s < 4; s++) {
+
+							if (m_object[i][s].getisExist()) {
+
+								if (m_object[i][s].getisIncrease()) {
+									break;
+								}
+
+								if (m_object[i][s].getObjectNum() == m_object[i][j].getObjectNum() ||
+									m_object[i][s].getObjectNum() == m_object[i][s - 1].getObjectNum()) {
+									m_object[i][s].increaseNum();
+									m_object[i][s - 1].init();
+									m_object[i][j].init();
+									m_score += m_object[i][s].getObjectNum();
+									m_movecount++;
+								}
+								break;
+							}
+
+							if (s == j + 1) {
+								m_object[i][s] = m_object[i][j];
+								m_object[i][j].init();
+								m_movecount++;
+							}
+							else {
+								m_object[i][s] = m_object[i][s - 1];
+								m_object[i][s - 1].init();
+								m_movecount++;
+							}
+
+						}
+
+					}
+
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			if (m_object[i][j].getisExist()) {
+				m_existcount++;
+			}
+		}
+	}
+
+	if (m_movecount == 0 && m_existcount == 16) m_isGameEnd = true;
 
 }
 
 void SceneMain::creatObject() {
 
 	bool isCreat = false;
+
 	int address = -1;
 
 	while (!isCreat) {
@@ -217,31 +409,11 @@ void SceneMain::creatObject() {
 		m_tmpx = GetRand(3);
 		m_tmpy = GetRand(3);
 
-		for (int i = 0; i < 16; i++) {
-
-			if (!m_object[i].getisExist()) {
-
-				for (int j = 0; j < 16; j++) {
-					if (i == j)	continue;
-
-					if (m_object[j].getisExist() &&
-						static_cast<int>(m_object[j].getisIndex().x) == m_tmpx &&
-						static_cast<int>(m_object[j].getisIndex().y) == m_tmpy) {
-						isCreat = false;
-						break;
-					}
-
-					isCreat = true;
-					address = i;
-				}
-			}
-			if (isCreat)	break;
-		}
-
+		if (!m_object[m_tmpx][m_tmpy].getisExist()) isCreat = true;
+			
 		if (isCreat) {
-			m_object[address].setData(m_tmpx, m_tmpy, ((GetRand(1) + 1) * 2));
+			m_object[m_tmpx][m_tmpy].setData(((GetRand(1) + 1) * 2));
 		}
 
 	}
-
 }
