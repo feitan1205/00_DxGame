@@ -116,7 +116,6 @@ void SceneMain::update()
 		return;
 	}
 	
-	//m_object[0].setData(0, 0, 0);
 
 	m_tmpx = 0;
 	m_tmpy = 0;
@@ -404,6 +403,8 @@ void SceneMain::creatObject() {
 
 	int address = -1;
 
+	int creatNum = GetRand(4);
+
 	while (!isCreat) {
 
 		m_tmpx = GetRand(3);
@@ -411,8 +412,11 @@ void SceneMain::creatObject() {
 
 		if (!m_object[m_tmpx][m_tmpy].getisExist()) isCreat = true;
 			
-		if (isCreat) {
-			m_object[m_tmpx][m_tmpy].setData(((GetRand(1) + 1) * 2));
+		if (isCreat && creatNum == 0) {
+			m_object[m_tmpx][m_tmpy].setData(4);
+		}
+		if (isCreat && creatNum != 0) {
+			m_object[m_tmpx][m_tmpy].setData(2);
 		}
 
 	}

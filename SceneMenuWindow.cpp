@@ -12,7 +12,6 @@ void SceneMenuWindow::init()
 
 	m_menu.init();
 	m_menu.addItem("再開");
-	m_menu.addItem("オプション");
 	m_menu.addItem("ゲーム終了");
 
 	m_menu.setPos(100, 100);

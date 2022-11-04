@@ -12,7 +12,6 @@ void SceneTitle::init()
 
 	m_menu.init();
 	m_menu.addItem("ゲームスタート");
-	m_menu.addItem("オプション");
 	m_menu.addItem("ゲーム終了");
 
 	m_menu.setPos(Game::kScreenWidth / 2 - 73, Game::kScreenHeight / 2 - 50);

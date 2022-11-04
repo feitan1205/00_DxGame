@@ -56,7 +56,7 @@ int SelectMenu::Item::getTextWidth()
 
 SelectMenu::Cursor::Cursor() {
 
-	m_itemNum = 3;
+	m_itemNum = 2;
 	m_repeatDown = 0;
 	m_repeatUp = 0;
 	m_selectIndex = 0;
@@ -133,7 +133,7 @@ void SelectMenu::Cursor::update() {
 			m_isGameStart = true;
 		}
 
-		if (m_selectIndex == 2) {
+		if (m_selectIndex == 1) {
 			m_isGameEnd = true;
 		}
 
