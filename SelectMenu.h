@@ -31,6 +31,8 @@ public:
 	bool getisGameEnd() { return m_cursor.getGameEnd(); }
 	bool getisGameStart() { return m_cursor.getGameStart(); }
 
+	void setItemNum(int itemNum) { m_itemNum = itemNum; }
+
 private:
 	class Item {
 
@@ -53,6 +55,8 @@ private:
 
 		const char* m_text;
 	};
+
+
 
 	class Cursor {
 
@@ -100,4 +104,6 @@ private:
 	Cursor m_cursor;
 
 	int width;
+
+	int m_itemNum;
 };
